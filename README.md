@@ -5,7 +5,8 @@ This is the first assignment for Software Methodology, done by [Brad Mitchell](h
 ## Task List
 
 - [x] Initiate Repository (Brad)
-- [ ] Set up Java Stage
+- [x] Set up barebones Java Stage (Brad)
+- [ ] Connect grid elements with methods/java code
 - [ ] Song List
   - [ ] Pre-select first song
 - [ ] Song Detail
