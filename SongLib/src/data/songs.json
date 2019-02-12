@@ -1,0 +1,22 @@
+{
+	"songs": [
+		{
+			"name": "Thank You, Next",
+			"artist": "Ariana Grande",
+			"album": "Thank You, Next",
+			"Year": 2018
+		},
+		{
+			"name": "Sunflower",
+			"artist": "Post Malone",
+			"album": "",
+			"Year": 2018
+		},
+		{
+			"name": "Chocolate",
+			"artist": "The 1975",
+			"album": "The 1975",
+			"Year": 2013
+		}
+	]
+}
