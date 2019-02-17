@@ -6,27 +6,14 @@ public class Song {
 	public String artist;
 	public String album=null;
 	public int year=-1;
-	public Song(String newname,String newartist) {
-		name=newname;
-		artist=newartist;
-	}
-	public Song(String newname,String newartist, String newalbum) {
-		name=newname;
-		artist=newartist;
-		album=newalbum;
-	}
+
 	public Song(String newname,String newartist, String newalbum, int newyear) {
 		name=newname;
 		artist=newartist;
 		album=newalbum;
 		year=newyear;
 	}
-	public Song(String newname,String newartist, int newyear) {
-		name=newname;
-		artist=newartist;
-		year=newyear;
-	}
-	public String toString() {
+	public String toLongString() {
 		String full = name+", "+artist;
 		if(album!=null) {
 			full=full+", "+album;
@@ -36,6 +23,9 @@ public class Song {
 		}
 		return full;
 	}
+	public String toString() {
+		return name+" by "+artist;
+	}
 	public String getName() {
 		return name;
 	}
@@ -43,16 +33,10 @@ public class Song {
 		return artist;
 	}
 	public String getAlbum() {
-		if(album==null) {
-			return "not available";
-		}
 		return album;
 	}
-	public String getYear() {
-		if(year==-1) {
-			return "not available";
-		}
-		return Integer.toString(year);
+	public int getYear() {
+		return year;
 	}
 	public void changeName(String newName) {
 		name=newName;
@@ -67,9 +51,9 @@ public class Song {
 		year=newYear;
 	}
 	public int compareTo(Song A, Song B) {
-	    if(A.getName().compareTo(B.getName())!=0) {
-	        return A.getName().compareTo(B.getName());
-	    } else 
-	    	return A.getArtist().compareTo(B.getArtist());
+		if(A.getName().compareTo(B.getName())!=0) {
+			return A.getName().compareTo(B.getName());
+		} else 
+			return A.getArtist().compareTo(B.getArtist());
 	}
 }
