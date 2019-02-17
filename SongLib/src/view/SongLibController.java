@@ -5,6 +5,7 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.event.ActionEvent;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TextField;
 import javafx.scene.control.Button;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
@@ -27,6 +28,10 @@ public class SongLibController {
 	@FXML Text artist;
 	@FXML Text album;
 	@FXML Text year;
+	@FXML TextField songField;
+	@FXML TextField artistField;
+	@FXML TextField albumField;
+	@FXML TextField yearField;
 	
 	
 	private ObservableList<String> obsList;
@@ -49,7 +54,12 @@ public class SongLibController {
 			obsList = FXCollections.observableArrayList(song_names);
 			listView.setItems(obsList);
 			
+			// preselect first one
 			listView.getSelectionModel().select(0);
+			
+			// listen for changes in selection
+			listView.getSelectionModel().selectedIndexProperty().addListener(
+					(obs, oldVal, newVal) -> showItem(mainStage));
 			
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
@@ -59,7 +69,9 @@ public class SongLibController {
 			e.printStackTrace();
 		}
 		
-		
+		// Pre-set the data to the first selected.
+		String firstSong = listView.getSelectionModel().getSelectedItem();
+		song.setText(firstSong);
 		
 	}
 	
@@ -78,8 +90,20 @@ public class SongLibController {
 		} 
 	}
 	
+	
+	/* ADD, EDIT, DELETE BUTTON METHODS */
+	
 	public void editAction(ActionEvent e) {
 		System.out.println("Edit Button Working");
+		String currentSong = song.getText();
+		String currentArtist = artist.getText();
+		String currentAlbum = album.getText();
+		String currentYear = year.getText();
+		
+		songField.setText(currentSong);
+		artistField.setText(currentArtist);
+		albumField.setText(currentAlbum);
+		yearField.setText(currentYear);
 		/* To Do */
 	}
 	
@@ -91,5 +115,14 @@ public class SongLibController {
 	public void deleteAction(ActionEvent e) {
 		System.out.println("Delete Button Working");
 		/* To Do */
+		obsList.remove(listView.getSelectionModel().getSelectedItem());
+	}
+	
+	
+	/* CHANGING DETAILS PANE */
+	
+	private void showItem(Stage mainStage) {
+		String item = listView.getSelectionModel().getSelectedItem();
+		song.setText(item);
 	}
 }

@@ -99,10 +99,10 @@
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-            <TextField maxWidth="-Infinity" prefHeight="27.0" prefWidth="200.0" promptText="Song Name" />
-            <TextField maxWidth="-Infinity" prefWidth="200.0" promptText="Artist" GridPane.columnIndex="1" GridPane.halignment="CENTER" />
-            <TextField layoutX="218.0" layoutY="28.0" maxWidth="-Infinity" prefWidth="200.0" promptText="Album" GridPane.columnIndex="2" />
-            <TextField layoutX="10.0" layoutY="28.0" maxWidth="-Infinity" prefWidth="200.0" promptText="Year" GridPane.columnIndex="3" />
+            <TextField fx:id="songField" maxWidth="-Infinity" prefHeight="27.0" prefWidth="200.0" promptText="Song Name" />
+            <TextField fx:id="artistField" maxWidth="-Infinity" prefWidth="200.0" promptText="Artist" GridPane.columnIndex="1" GridPane.halignment="CENTER" />
+            <TextField fx:id="albumField" layoutX="218.0" layoutY="28.0" maxWidth="-Infinity" prefWidth="200.0" promptText="Album" GridPane.columnIndex="2" />
+            <TextField fx:id="yearField" layoutX="10.0" layoutY="28.0" maxWidth="-Infinity" prefWidth="200.0" promptText="Year" GridPane.columnIndex="3" />
          </children>
          <padding>
             <Insets left="10.0" right="10.0" />
