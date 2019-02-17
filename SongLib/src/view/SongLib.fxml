@@ -50,22 +50,22 @@
                   <Insets left="20.0" top="140.0" />
                </GridPane.margin>
             </Label>
-            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="N/A" GridPane.columnIndex="1" GridPane.valignment="TOP">
+            <Text fx:id="song" strokeType="OUTSIDE" strokeWidth="0.0" text="N/A" GridPane.columnIndex="1" GridPane.valignment="TOP">
                <GridPane.margin>
                   <Insets left="80.0" top="20.0" />
                </GridPane.margin>
             </Text>
-            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="N/A" GridPane.columnIndex="1" GridPane.valignment="TOP">
+            <Text fx:id="artist" strokeType="OUTSIDE" strokeWidth="0.0" text="N/A" GridPane.columnIndex="1" GridPane.valignment="TOP">
                <GridPane.margin>
                   <Insets left="80.0" top="60.0" />
                </GridPane.margin>
             </Text>
-            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="N/A" GridPane.columnIndex="1" GridPane.valignment="TOP">
+            <Text fx:id="album" strokeType="OUTSIDE" strokeWidth="0.0" text="N/A" GridPane.columnIndex="1" GridPane.valignment="TOP">
                <GridPane.margin>
                   <Insets left="80.0" top="100.0" />
                </GridPane.margin>
             </Text>
-            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="N/A" GridPane.columnIndex="1" GridPane.valignment="TOP">
+            <Text fx:id="year" strokeType="OUTSIDE" strokeWidth="0.0" text="N/A" GridPane.columnIndex="1" GridPane.valignment="TOP">
                <GridPane.margin>
                   <Insets left="80.0" top="140.0" />
                </GridPane.margin>
@@ -80,9 +80,9 @@
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-            <Button mnemonicParsing="false" prefHeight="27.0" prefWidth="86.0" text="Edit" GridPane.halignment="CENTER" />
-            <Button mnemonicParsing="false" prefHeight="27.0" prefWidth="86.0" text="Add" GridPane.halignment="LEFT" />
-            <Button mnemonicParsing="false" prefHeight="27.0" prefWidth="86.0" text="Delete" GridPane.halignment="RIGHT" />
+            <Button fx:id="edit" onAction="#editAction" mnemonicParsing="false" prefHeight="27.0" prefWidth="86.0" text="Edit" GridPane.halignment="CENTER" />
+            <Button fx:id="add" onAction="#addAction" mnemonicParsing="false" prefHeight="27.0" prefWidth="86.0" text="Add" GridPane.halignment="LEFT" />
+            <Button fx:id="delete" onAction="#deleteAction" mnemonicParsing="false" prefHeight="27.0" prefWidth="86.0" text="Delete" GridPane.halignment="RIGHT" />
          </children>
          <padding>
             <Insets bottom="10.0" left="250.0" right="250.0" top="10.0" />
