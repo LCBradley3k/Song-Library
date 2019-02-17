@@ -19,8 +19,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import application.Song;
+
 public class SongLibController {
-	@FXML ListView<String> listView;
+	@FXML ListView<Song> listView;
 	@FXML Button edit;
 	@FXML Button add;
 	@FXML Button delete;
@@ -34,8 +36,8 @@ public class SongLibController {
 	@FXML TextField yearField;
 	
 	
-	private ObservableList<String> obsList;
-	
+	private ObservableList<Song> obsList;
+
 	public void start(Stage mainStage) {
 		
 		// Open JSON content as string
@@ -44,14 +46,16 @@ public class SongLibController {
 			JSONObject song_obj = new JSONObject(content);
 			JSONArray song_info = song_obj.getJSONArray("songs");
 			
-			ArrayList<String> song_names = new ArrayList<String>();
+			ArrayList<Song> songs = new ArrayList<Song>();
+			
 			
 			for(int i=0; i<song_info.length(); i++) {
-				song_names.add(song_info.getJSONObject(i).getString("name"));
+				Song fromstorage =new Song(song_info.getJSONObject(i).getString("name"),song_info.getJSONObject(i).getString("artist"), song_info.getJSONObject(i).getString("album"),song_info.getJSONObject(i).getInt("Year"));
+				songs.add(fromstorage);
 			}
 			
 			// create ObservableList from an ArrayList
-			obsList = FXCollections.observableArrayList(song_names);
+			obsList = FXCollections.observableArrayList(songs);
 			listView.setItems(obsList);
 			
 			// preselect first one
@@ -70,8 +74,19 @@ public class SongLibController {
 		}
 		
 		// Pre-set the data to the first selected.
-		String firstSong = listView.getSelectionModel().getSelectedItem();
-		song.setText(firstSong);
+		Song firstSong = listView.getSelectionModel().getSelectedItem();
+		song.setText(firstSong.getName());
+		artist.setText(firstSong.getArtist());
+		if(firstSong.getAlbum().equals("")) {
+			album.setText("Not defined");
+		}else {
+			album.setText(firstSong.getAlbum());
+		}
+		if(firstSong.getYear()==-1) {
+			year.setText("Not defined");
+		}else {
+			year.setText(Integer.toString(firstSong.getYear()));
+		}
 		
 	}
 	
@@ -104,17 +119,44 @@ public class SongLibController {
 		artistField.setText(currentArtist);
 		albumField.setText(currentAlbum);
 		yearField.setText(currentYear);
-		/* To Do */
+		//add way to confirm edits. the current edit button pops the current characteristics in, but clicking it again will do the same thing. Maybe Confirm Edit Button.
 	}
 	
 	public void addAction(ActionEvent e) {
-		System.out.println("Add Button Working");
-		/* To Do */
+		int counter=0;
+		if(songField.getText().isEmpty() ||artistField.getText().isEmpty()) {
+			System.out.println("Must add SongName and Artist");//add popup
+			return;
+		}
+		while(counter<obsList.size()) {
+			if(obsList.get(counter).getName().equals(songField.getText()) &&obsList.get(counter).getArtist().equals(artistField.getText())) {
+				System.out.println("Already entered");//add popup
+				return;
+			}
+			counter++;
+		}
+		if(yearField.getText().isEmpty()) {
+			Song newadd=new Song(songField.getText(),artistField.getText(),albumField.getText(),-1);
+			obsList.add(newadd);
+			listView.getSelectionModel().clearSelection();
+			obsList.sort((a,b) -> a.getName().compareToIgnoreCase(b.getName())==0 ? a.getArtist().compareToIgnoreCase(b.getArtist()) : a.getName().compareToIgnoreCase(b.getName()));
+			listView.getSelectionModel().select(obsList.indexOf(newadd));
+			
+			return;
+		}
+		try{	
+			Song newadd=new Song(songField.getText(),artistField.getText(),albumField.getText(),Integer.parseInt(yearField.getText()));
+			obsList.add(newadd);
+			obsList.sort((a,b) -> a.getName().compareToIgnoreCase(b.getName())==0 ? a.getArtist().compareToIgnoreCase(b.getArtist()) : a.getName().compareToIgnoreCase(b.getName()));
+			
+			return;
+		}catch (NumberFormatException f) {
+			System.out.println("Year isn't an Int");//add popup
+			return;
+		}
 	}
 	
 	public void deleteAction(ActionEvent e) {
-		System.out.println("Delete Button Working");
-		/* To Do */
 		obsList.remove(listView.getSelectionModel().getSelectedItem());
 	}
 	
@@ -122,7 +164,22 @@ public class SongLibController {
 	/* CHANGING DETAILS PANE */
 	
 	private void showItem(Stage mainStage) {
-		String item = listView.getSelectionModel().getSelectedItem();
-		song.setText(item);
+		Song item = listView.getSelectionModel().getSelectedItem();
+		if(item==null) {//if there are no items left or when sorting prevents error
+			return;
+		}
+		song.setText(item.getName());
+		artist.setText(item.getArtist());
+		if(item.getAlbum().equals("")) {
+			album.setText("Not defined");
+		}else {
+			album.setText(item.getAlbum());
+		}
+		if(item.getYear()==-1) {
+			year.setText("Not defined");
+		}else {
+			year.setText(Integer.toString(item.getYear()));
+		}
 	}
+	//When program being closed. Save the Songs to the json
 }
