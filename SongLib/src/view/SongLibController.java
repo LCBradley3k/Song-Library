@@ -37,6 +37,7 @@ public class SongLibController {
 	
 	
 	private ObservableList<Song> obsList;
+	private boolean	first;
 
 	public void start(Stage mainStage) {
 		
@@ -57,7 +58,7 @@ public class SongLibController {
 			// create ObservableList from an ArrayList
 			obsList = FXCollections.observableArrayList(songs);
 			listView.setItems(obsList);
-			
+			first=true;
 			// preselect first one
 			listView.getSelectionModel().select(0);
 			
@@ -110,27 +111,71 @@ public class SongLibController {
 	
 	public void editAction(ActionEvent e) {
 		System.out.println("Edit Button Working");
-		String currentSong = song.getText();
-		String currentArtist = artist.getText();
-		String currentAlbum = album.getText();
-		String currentYear = year.getText();
-		
-		songField.setText(currentSong);
-		artistField.setText(currentArtist);
-		albumField.setText(currentAlbum);
-		yearField.setText(currentYear);
-		//add way to confirm edits. the current edit button pops the current characteristics in, but clicking it again will do the same thing. Maybe Confirm Edit Button.
+		if(first) {
+			String currentSong = song.getText();
+			String currentArtist = artist.getText();
+			String currentAlbum = album.getText();
+			String currentYear = year.getText();
+			songField.setText(currentSong);
+			artistField.setText(currentArtist);
+			if(currentAlbum.equals("Not defined")) {
+				currentAlbum="";
+			}
+			if(currentYear.equals("Not defined")) {
+				currentYear="";
+			}
+			albumField.setText(currentAlbum);
+			yearField.setText(currentYear);
+			first=false;
+		}else {
+			int counter=0;
+			if(songField.getText().isEmpty() ||artistField.getText().isEmpty()) {
+				System.out.println("Must add SongName and Artist");
+				return;
+			}
+			while(counter<obsList.size()) {
+				if(obsList.get(counter).getName().equals(songField.getText()) &&obsList.get(counter).getArtist().equals(artistField.getText())) {
+					System.out.println("Already entered");
+					return;
+				}
+				counter++;
+			}
+			if(yearField.getText().isEmpty()) {
+				Song newadd=new Song(songField.getText(),artistField.getText(),albumField.getText(),-1);
+				obsList.remove(listView.getSelectionModel().getSelectedItem());
+				obsList.add(newadd);
+				listView.getSelectionModel().clearSelection();
+				obsList.sort((a,b) -> a.getName().compareToIgnoreCase(b.getName())==0 ? a.getArtist().compareToIgnoreCase(b.getArtist()) : a.getName().compareToIgnoreCase(b.getName()));
+				listView.getSelectionModel().select(obsList.indexOf(newadd));
+				
+				return;
+			}
+			try{	
+				Song newadd=new Song(songField.getText(),artistField.getText(),albumField.getText(),Integer.parseInt(yearField.getText()));
+				obsList.remove(listView.getSelectionModel().getSelectedItem());
+				obsList.add(newadd);
+				obsList.sort((a,b) -> a.getName().compareToIgnoreCase(b.getName())==0 ? a.getArtist().compareToIgnoreCase(b.getArtist()) : a.getName().compareToIgnoreCase(b.getName()));
+				
+				return;
+			}catch (NumberFormatException f) {
+				System.out.println("Year isn't an Int");
+				return;
+			}
+		}
+	
+		/* To Do Add finalize edit */
 	}
 	
 	public void addAction(ActionEvent e) {
+		System.out.println("Add Button Working");
 		int counter=0;
 		if(songField.getText().isEmpty() ||artistField.getText().isEmpty()) {
-			System.out.println("Must add SongName and Artist");//add popup
+			System.out.println("Must add SongName and Artist");
 			return;
 		}
 		while(counter<obsList.size()) {
 			if(obsList.get(counter).getName().equals(songField.getText()) &&obsList.get(counter).getArtist().equals(artistField.getText())) {
-				System.out.println("Already entered");//add popup
+				System.out.println("Already entered");
 				return;
 			}
 			counter++;
@@ -151,13 +196,18 @@ public class SongLibController {
 			
 			return;
 		}catch (NumberFormatException f) {
-			System.out.println("Year isn't an Int");//add popup
+			System.out.println("Year isn't an Int");
 			return;
 		}
+		
+		/* To Do */
 	}
 	
 	public void deleteAction(ActionEvent e) {
+		System.out.println("Delete Button Working");
+		/* To Do */
 		obsList.remove(listView.getSelectionModel().getSelectedItem());
+		
 	}
 	
 	
@@ -165,9 +215,14 @@ public class SongLibController {
 	
 	private void showItem(Stage mainStage) {
 		Song item = listView.getSelectionModel().getSelectedItem();
-		if(item==null) {//if there are no items left or when sorting prevents error
+		if(item==null) {
 			return;
 		}
+		first=true;
+		songField.setText("");
+		artistField.setText("");
+		albumField.setText("");
+		yearField.setText("");
 		song.setText(item.getName());
 		artist.setText(item.getArtist());
 		if(item.getAlbum().equals("")) {
@@ -181,5 +236,4 @@ public class SongLibController {
 			year.setText(Integer.toString(item.getYear()));
 		}
 	}
-	//When program being closed. Save the Songs to the json
 }
