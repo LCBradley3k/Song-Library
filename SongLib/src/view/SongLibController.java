@@ -110,8 +110,7 @@ public class SongLibController {
 	/* ADD, EDIT, DELETE BUTTON METHODS */
 	
 	public void editAction(ActionEvent e) {
-		System.out.println("Edit Button Working");
-		if(first) {
+		if(first) {//if its on a new item and edit hasn't been clicked before
 			String currentSong = song.getText();
 			String currentArtist = artist.getText();
 			String currentAlbum = album.getText();
@@ -167,7 +166,6 @@ public class SongLibController {
 	}
 	
 	public void addAction(ActionEvent e) {
-		System.out.println("Add Button Working");
 		int counter=0;
 		if(songField.getText().isEmpty() ||artistField.getText().isEmpty()) {
 			System.out.println("Must add SongName and Artist");
@@ -204,9 +202,9 @@ public class SongLibController {
 	}
 	
 	public void deleteAction(ActionEvent e) {
-		System.out.println("Delete Button Working");
-		/* To Do */
+		int temp=obsList.indexOf(listView.getSelectionModel().getSelectedItem());
 		obsList.remove(listView.getSelectionModel().getSelectedItem());
+		listView.getSelectionModel().select(temp);
 		
 	}
 	
@@ -215,7 +213,7 @@ public class SongLibController {
 	
 	private void showItem(Stage mainStage) {
 		Song item = listView.getSelectionModel().getSelectedItem();
-		if(item==null) {
+		if(item==null) {//no items left
 			return;
 		}
 		first=true;
