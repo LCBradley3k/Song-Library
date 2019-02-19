@@ -130,6 +130,9 @@ public class SongLibController {
 			String currentYear = year.getText();
 			songField.setText(currentSong);
 			artistField.setText(currentArtist);
+			edit.setText("Save");
+			add.setDisable(true);
+			delete.setDisable(true);
 			if(currentAlbum.equals("Not defined")) {
 				currentAlbum="";
 			}
@@ -168,6 +171,9 @@ public class SongLibController {
 			}
 			
 			saveSongs(obsList);
+			edit.setText("Edit");
+			add.setDisable(false);
+			delete.setDisable(false);
 		}
 
 	}
