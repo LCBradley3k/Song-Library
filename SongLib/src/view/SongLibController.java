@@ -13,6 +13,7 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -46,6 +47,7 @@ public class SongLibController {
 		// Open JSON content as string
 		try {
 			String content = readFile("src/data/songs.json");
+			/* ORIGINAL WAY OF DOING IT
 			JSONObject song_obj = new JSONObject(content);
 			JSONArray song_info = song_obj.getJSONArray("songs");
 			
@@ -55,7 +57,16 @@ public class SongLibController {
 			for(int i=0; i<song_info.length(); i++) {
 				Song fromstorage =new Song(song_info.getJSONObject(i).getString("name"),song_info.getJSONObject(i).getString("artist"), song_info.getJSONObject(i).getString("album"),song_info.getJSONObject(i).getInt("Year"));
 				songs.add(fromstorage);
+			} */
+			
+			JSONArray song_info = new JSONArray(content);
+			ArrayList<Song> songs = new ArrayList<Song>();
+			
+			for(int i=0; i<song_info.length(); i++) {
+				Song fromstorage =new Song(song_info.getJSONObject(i).getString("name"),song_info.getJSONObject(i).getString("artist"), song_info.getJSONObject(i).getString("album"),song_info.getJSONObject(i).getInt("year"));
+				songs.add(fromstorage);
 			}
+			
 			
 			// create ObservableList from an ArrayList
 			obsList = FXCollections.observableArrayList(songs);
@@ -111,7 +122,7 @@ public class SongLibController {
 	
 	/* ADD, EDIT, DELETE BUTTON METHODS */
 	
-	public void editAction(ActionEvent e) {
+	public void editAction(ActionEvent e) throws IOException {
 		if(first) {//if its on a new item and edit hasn't been clicked before
 			String currentSong = song.getText();
 			String currentArtist = artist.getText();
@@ -149,6 +160,7 @@ public class SongLibController {
 				obsList.sort((a,b) -> a.getName().compareToIgnoreCase(b.getName())==0 ? a.getArtist().compareToIgnoreCase(b.getArtist()) : a.getName().compareToIgnoreCase(b.getName()));
 				listView.getSelectionModel().select(obsList.indexOf(newadd));
 				
+				saveSongs(obsList);
 				return;
 			}
 			try{	
@@ -157,17 +169,17 @@ public class SongLibController {
 				obsList.add(newadd);
 				obsList.sort((a,b) -> a.getName().compareToIgnoreCase(b.getName())==0 ? a.getArtist().compareToIgnoreCase(b.getArtist()) : a.getName().compareToIgnoreCase(b.getName()));
 				
-				return;
 			}catch (NumberFormatException f) {
 				createErrorAlert("Error During Edit", "Year must be an integer!");
 				return;
 			}
+			
+			saveSongs(obsList);
 		}
-	
-		/* To Do Add finalize edit */
+
 	}
 	
-	public void addAction(ActionEvent e) {
+	public void addAction(ActionEvent e) throws IOException {
 		int counter=0;
 		if(songField.getText().isEmpty() ||artistField.getText().isEmpty()) {
 			createErrorAlert("Error During Add", "Must add SongName and Artist");
@@ -187,29 +199,34 @@ public class SongLibController {
 			obsList.sort((a,b) -> a.getName().compareToIgnoreCase(b.getName())==0 ? a.getArtist().compareToIgnoreCase(b.getArtist()) : a.getName().compareToIgnoreCase(b.getName()));
 			listView.getSelectionModel().select(obsList.indexOf(newadd));
 			
+			saveSongs(obsList);
 			return;
+			
 		}
 		try{	
 			Song newadd=new Song(songField.getText(),artistField.getText(),albumField.getText(),Integer.parseInt(yearField.getText()));
 			obsList.add(newadd);
 			obsList.sort((a,b) -> a.getName().compareToIgnoreCase(b.getName())==0 ? a.getArtist().compareToIgnoreCase(b.getArtist()) : a.getName().compareToIgnoreCase(b.getName()));
-			
-			return;
+
 		}catch (NumberFormatException f) {
 			createErrorAlert("Error During Add", "Year must be an integer!");
 			return;
 		}
 		
-		/* To Do */
+		saveSongs(obsList);
 	}
 	
-	public void deleteAction(ActionEvent e) {
+	public void deleteAction(ActionEvent e) throws IOException {
 		if(obsList.size() == 0) {
 			createErrorAlert("Error", "No songs to delete!");
 		} else {
 			int temp=obsList.indexOf(listView.getSelectionModel().getSelectedItem());
 			obsList.remove(listView.getSelectionModel().getSelectedItem());
 			listView.getSelectionModel().select(temp);
+			
+			
+			
+			saveSongs(obsList);
 		}
 		
 	}
@@ -248,5 +265,14 @@ public class SongLibController {
 		alert.setHeaderText(null);
 		alert.setContentText(errorMessage);
 		alert.showAndWait();
+	}
+	
+	public void saveSongs(ObservableList<Song> songList) throws IOException {
+		JSONArray songs = new JSONArray(obsList);
+		try (FileWriter file = new FileWriter("src/data/songs.json")) {
+			file.write(songs.toString());
+			System.out.println("Successfully Copied JSON Object to File...");
+			System.out.println("\nJSON Object: " + songs);
+		}
 	}
 }
