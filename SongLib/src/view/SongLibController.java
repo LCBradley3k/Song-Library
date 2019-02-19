@@ -1,3 +1,4 @@
+//made by Brad Mitchell and Arth Patel
 package view;
 
 import javafx.collections.FXCollections;
@@ -86,20 +87,28 @@ public class SongLibController {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		// Pre-set the data to the first selected.
 		Song firstSong = listView.getSelectionModel().getSelectedItem();
-		song.setText(firstSong.getName());
-		artist.setText(firstSong.getArtist());
-		if(firstSong.getAlbum().equals("")) {
-			album.setText("Not defined");
+		if(firstSong==null) {//no items left
+			song.setText("");
+			artist.setText("");
+			album.setText("");
+			year.setText("");
+			
 		}else {
-			album.setText(firstSong.getAlbum());
-		}
-		if(firstSong.getYear()==-1) {
-			year.setText("Not defined");
-		}else {
-			year.setText(Integer.toString(firstSong.getYear()));
+		// Pre-set the data to the first selected.
+			
+			song.setText(firstSong.getName());
+			artist.setText(firstSong.getArtist());
+			if(firstSong.getAlbum().equals("")) {
+				album.setText("Not defined");
+			}else {
+				album.setText(firstSong.getAlbum());
+			}
+			if(firstSong.getYear()==-1) {
+				year.setText("Not defined");
+			}else {
+				year.setText(Integer.toString(firstSong.getYear()));
+			}
 		}
 		
 	}
@@ -148,6 +157,13 @@ public class SongLibController {
 				createErrorAlert("Error During Edit", "Must add song name and artist!");
 				return;
 			}
+			while(counter<obsList.size()) {
+				if(obsList.get(counter).getName().equalsIgnoreCase(songField.getText()) &&obsList.get(counter).getArtist().equalsIgnoreCase(artistField.getText())&&counter!=obsList.indexOf(listView.getSelectionModel().getSelectedItem())) {
+					createErrorAlert("Error During Edit", "Already Entered");
+					return;
+				}
+				counter++;
+			}
 			if(yearField.getText().isEmpty()) {
 				Song newadd=new Song(songField.getText(),artistField.getText(),albumField.getText(),-1);
 				obsList.remove(listView.getSelectionModel().getSelectedItem());
@@ -155,21 +171,18 @@ public class SongLibController {
 				listView.getSelectionModel().clearSelection();
 				obsList.sort((a,b) -> a.getName().compareToIgnoreCase(b.getName())==0 ? a.getArtist().compareToIgnoreCase(b.getArtist()) : a.getName().compareToIgnoreCase(b.getName()));
 				listView.getSelectionModel().select(obsList.indexOf(newadd));
+			}else {
+				try{	
+					Song newadd=new Song(songField.getText(),artistField.getText(),albumField.getText(),Integer.parseInt(yearField.getText()));
+					obsList.remove(listView.getSelectionModel().getSelectedItem());
+					obsList.add(newadd);
+					obsList.sort((a,b) -> a.getName().compareToIgnoreCase(b.getName())==0 ? a.getArtist().compareToIgnoreCase(b.getArtist()) : a.getName().compareToIgnoreCase(b.getName()));
 				
-				saveSongs(obsList);
-				return;
+				}catch (NumberFormatException f) {
+					createErrorAlert("Error During Edit", "Year must be an integer!");
+					return;
+				}
 			}
-			try{	
-				Song newadd=new Song(songField.getText(),artistField.getText(),albumField.getText(),Integer.parseInt(yearField.getText()));
-				obsList.remove(listView.getSelectionModel().getSelectedItem());
-				obsList.add(newadd);
-				obsList.sort((a,b) -> a.getName().compareToIgnoreCase(b.getName())==0 ? a.getArtist().compareToIgnoreCase(b.getArtist()) : a.getName().compareToIgnoreCase(b.getName()));
-				
-			}catch (NumberFormatException f) {
-				createErrorAlert("Error During Edit", "Year must be an integer!");
-				return;
-			}
-			
 			saveSongs(obsList);
 			edit.setText("Edit");
 			add.setDisable(false);
@@ -185,7 +198,7 @@ public class SongLibController {
 			return;
 		}
 		while(counter<obsList.size()) {
-			if(obsList.get(counter).getName().equals(songField.getText()) &&obsList.get(counter).getArtist().equals(artistField.getText())) {
+			if(obsList.get(counter).getName().equalsIgnoreCase(songField.getText()) &&obsList.get(counter).getArtist().equalsIgnoreCase(artistField.getText())) {
 				createErrorAlert("Error During Add", "Song already exists!");
 				return;
 			}
@@ -222,7 +235,30 @@ public class SongLibController {
 			int temp=obsList.indexOf(listView.getSelectionModel().getSelectedItem());
 			obsList.remove(listView.getSelectionModel().getSelectedItem());
 			listView.getSelectionModel().select(temp);
-			
+			Song item = listView.getSelectionModel().getSelectedItem();
+		
+			if(item==null) {//no items left
+				saveSongs(obsList);
+				song.setText("");
+				artist.setText("");
+				album.setText("");
+				year.setText("");
+				return;
+			}
+			first=true;
+	
+			song.setText(item.getName());
+			artist.setText(item.getArtist());
+			if(item.getAlbum().equals("")) {
+				album.setText("Not defined");
+			}else {
+				album.setText(item.getAlbum());
+			}
+			if(item.getYear()==-1) {
+				year.setText("Not defined");
+			}else {
+				year.setText(Integer.toString(item.getYear()));
+			}
 			
 			
 			saveSongs(obsList);
@@ -235,10 +271,13 @@ public class SongLibController {
 	
 	private void showItem(Stage mainStage) {
 		Song item = listView.getSelectionModel().getSelectedItem();
-		if(item==null) {//no items left
+		first=true;
+		add.setDisable(false);
+		delete.setDisable(false);
+		edit.setText("Edit");
+		if(item==null) {
 			return;
 		}
-		first=true;
 		songField.setText("");
 		artistField.setText("");
 		albumField.setText("");
