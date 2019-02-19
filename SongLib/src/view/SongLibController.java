@@ -145,13 +145,6 @@ public class SongLibController {
 				createErrorAlert("Error During Edit", "Must add song name and artist!");
 				return;
 			}
-			while(counter<obsList.size()) {
-				if(obsList.get(counter).getName().equals(songField.getText()) &&obsList.get(counter).getArtist().equals(artistField.getText())) {
-					createErrorAlert("Error During Edit", "Already Entered");
-					return;
-				}
-				counter++;
-			}
 			if(yearField.getText().isEmpty()) {
 				Song newadd=new Song(songField.getText(),artistField.getText(),albumField.getText(),-1);
 				obsList.remove(listView.getSelectionModel().getSelectedItem());
