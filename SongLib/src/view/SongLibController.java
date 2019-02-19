@@ -6,6 +6,8 @@ import javafx.fxml.FXML;
 import javafx.event.ActionEvent;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
@@ -129,12 +131,12 @@ public class SongLibController {
 		}else {
 			int counter=0;
 			if(songField.getText().isEmpty() ||artistField.getText().isEmpty()) {
-				System.out.println("Must add SongName and Artist");
+				createErrorAlert("Error During Edit", "Must add song name and artist!");
 				return;
 			}
 			while(counter<obsList.size()) {
 				if(obsList.get(counter).getName().equals(songField.getText()) &&obsList.get(counter).getArtist().equals(artistField.getText())) {
-					System.out.println("Already entered");
+					createErrorAlert("Error During Edit", "Already Entered");
 					return;
 				}
 				counter++;
@@ -157,7 +159,7 @@ public class SongLibController {
 				
 				return;
 			}catch (NumberFormatException f) {
-				System.out.println("Year isn't an Int");
+				createErrorAlert("Error During Edit", "Year must be an integer!");
 				return;
 			}
 		}
@@ -168,12 +170,12 @@ public class SongLibController {
 	public void addAction(ActionEvent e) {
 		int counter=0;
 		if(songField.getText().isEmpty() ||artistField.getText().isEmpty()) {
-			System.out.println("Must add SongName and Artist");
+			createErrorAlert("Error During Add", "Must add SongName and Artist");
 			return;
 		}
 		while(counter<obsList.size()) {
 			if(obsList.get(counter).getName().equals(songField.getText()) &&obsList.get(counter).getArtist().equals(artistField.getText())) {
-				System.out.println("Already entered");
+				createErrorAlert("Error During Add", "Song already exists!");
 				return;
 			}
 			counter++;
@@ -194,7 +196,7 @@ public class SongLibController {
 			
 			return;
 		}catch (NumberFormatException f) {
-			System.out.println("Year isn't an Int");
+			createErrorAlert("Error During Add", "Year must be an integer!");
 			return;
 		}
 		
@@ -202,9 +204,13 @@ public class SongLibController {
 	}
 	
 	public void deleteAction(ActionEvent e) {
-		int temp=obsList.indexOf(listView.getSelectionModel().getSelectedItem());
-		obsList.remove(listView.getSelectionModel().getSelectedItem());
-		listView.getSelectionModel().select(temp);
+		if(obsList.size() == 0) {
+			createErrorAlert("Error", "No songs to delete!");
+		} else {
+			int temp=obsList.indexOf(listView.getSelectionModel().getSelectedItem());
+			obsList.remove(listView.getSelectionModel().getSelectedItem());
+			listView.getSelectionModel().select(temp);
+		}
 		
 	}
 	
@@ -233,5 +239,14 @@ public class SongLibController {
 		}else {
 			year.setText(Integer.toString(item.getYear()));
 		}
+	}
+	
+	/* Error Functions */
+	public void createErrorAlert(String errorTitle, String errorMessage) {
+		Alert alert = new Alert(AlertType.ERROR);
+		alert.setTitle(errorTitle);
+		alert.setHeaderText(null);
+		alert.setContentText(errorMessage);
+		alert.showAndWait();
 	}
 }
