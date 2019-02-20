@@ -1,3 +1,5 @@
+/* Created by Brad Mitchell and Arth Patel */
+
 package application;
 	
 import javafx.application.Application;

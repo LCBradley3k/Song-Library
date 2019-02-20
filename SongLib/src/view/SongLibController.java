@@ -1,4 +1,5 @@
-//made by Brad Mitchell and Arth Patel
+/* Created by Brad Mitchell and Arth Patel */
+
 package view;
 
 import javafx.collections.FXCollections;
@@ -219,7 +220,7 @@ public class SongLibController {
 			Song newadd=new Song(songField.getText(),artistField.getText(),albumField.getText(),Integer.parseInt(yearField.getText()));
 			obsList.add(newadd);
 			obsList.sort((a,b) -> a.getName().compareToIgnoreCase(b.getName())==0 ? a.getArtist().compareToIgnoreCase(b.getArtist()) : a.getName().compareToIgnoreCase(b.getName()));
-
+			listView.getSelectionModel().select(obsList.indexOf(newadd));
 		}catch (NumberFormatException f) {
 			createErrorAlert("Error During Add", "Year must be an integer!");
 			return;
